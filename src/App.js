@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AllQuotation from "./pages/Quotation";
 import logo from "./logo.svg";
 import "./App.css";
@@ -21,7 +21,10 @@ function App() {
             element={<Quotationeditadddummy />}
             path="custiv/quotation/add"
           />
-          <Route element={<AllQuotation />} path="**"></Route>
+          <Route
+            element={<Navigate to="custiv/quotation/all" replace={true} />}
+            path="*"
+          ></Route>
         </Routes>
       </Provider>
       {/* </Routes> */}
