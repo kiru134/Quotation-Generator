@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import AllQuotation from "./pages/Quotation";
+import logo from "./logo.svg";
+import "./App.css";
+import Quotationeditadddummy from "./pages/Edit";
+import { Provider } from "react-redux";
+import store from "./appStore/Store";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {/* <Routes path="custiv/quotation"> */}
+      <Provider store={store}>
+        <Routes>
+          <Route element={<AllQuotation />} path="custiv/quotation/all"></Route>
+          <Route
+            element={<Quotationeditadddummy />}
+            path="custiv/quotation/edit/:quotationid"
+          />
+          <Route
+            element={<Quotationeditadddummy />}
+            path="custiv/quotation/add"
+          />
+        </Routes>
+      </Provider>
+      {/* </Routes> */}
+    </>
   );
 }
 

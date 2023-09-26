@@ -1,0 +1,9 @@
+.table-container {
+  height: 100%;
+  max-width: 100%;
+  overflow: auto;
+}
+
+.table-row {
+  height: 20px;
+}

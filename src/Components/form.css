@@ -1,0 +1,90 @@
+.form-box {
+  width: 80%;
+  /* min-height: 80%; */
+  /* max-width: 800px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* top: 50%;
+  left: 50%; */
+  /* transform: translate(-50%, -50%); */
+  background-color: white;
+  border-color: rgb(229, 228, 228);
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  padding: 30px 30px 30px 30px;
+}
+.formcontainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* FileUploader.css */
+
+.file-uploader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.file-uploader input[type="file"] {
+  margin-bottom: 10px;
+}
+
+.file-previews {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.file-preview {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 5px 0px 0px 5px;
+}
+
+.file-preview span {
+  flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  margin-right: 5px;
+}
+
+.file-preview button {
+  background-color: #9c27b0;
+  color: #fff;
+  border: none;
+  border-radius: 20%;
+  padding: 5px 5px;
+  cursor: pointer;
+}
+
+.file-preview button:hover {
+  background-color: #4780b8;
+}
+.file-input-label {
+  display: inline-block;
+  background-color: #1976d2;
+  color: #fff;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.file-input-label:hover {
+  background-color: #0056b3;
+}
+.top-app-bar {
+  margin-bottom: 30px;
+}
+.gridcontainer {
+  margin: 30px;
+  padding: 20px;
+}
