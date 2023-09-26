@@ -21,6 +21,7 @@ function App() {
             element={<Quotationeditadddummy />}
             path="custiv/quotation/add"
           />
+          <Route element={<AllQuotation />} path="**"></Route>
         </Routes>
       </Provider>
       {/* </Routes> */}
