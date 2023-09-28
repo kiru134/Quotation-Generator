@@ -7,10 +7,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { makeStyles } from "@material-ui/core";
 import FileUploader from "../Components/Fileuploader";
 import { useSelector, useDispatch } from "react-redux";
-import Tablecomp from "../Components/tables";
+import TableComponent from "../Components/tablenew";
 import useHttp from "../Hooks/usehttphook";
 import Snackbar from "@mui/material/Snackbar";
 import { v4 as uuidv4 } from "uuid";
+import html2pdf from "html2pdf.js";
+import Loading from "../Components/LoaderComponent";
 
 const useStyles = makeStyles({
   gridcontainer: {
@@ -22,9 +24,10 @@ const useStyles = makeStyles({
   },
 });
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-const Quotationeditadddummy = () => {
+const Quotationeditadd = () => {
   const classes = useStyles();
   const { isLoading, error, sendRequest: createquote } = useHttp();
+  const [snackbarmessage, setsnackbarmessage] = useState("");
 
   const quote = useSelector((state) => state.selectedQuote);
 
@@ -43,54 +46,86 @@ const Quotationeditadddummy = () => {
   const [quoteValidity, setQuoteValidity] = useState(
     quote && quote.expiry ? formatdate(new Date(quote.expiry)) : null
   );
-  const [quotefiles, setQuotefiles] = useState(quote ? quote.files : []);
+  const [quotefiles, setQuotefiles] = useState(
+    quote && quote.files ? quote.files : []
+  );
   const [quotetables, setquotetables] = useState(quote ? quote.tables : [[]]);
   const [isopen, setsnackbar] = useState(false);
+  console.log(quoteValidity);
+  // const createdquote = (data) => {
 
+  //   setsnackbar(true);
+
+  //   const element = document.getElementById("root");
+
+  //   const pdfOptions = {
+  //     margin: 10,
+  //     filename: `${quoteName}.pdf`,
+  //     image: { type: "jpeg", quality: 0.98 },
+  //     html2canvas: { scale: 2 },
+  //     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+  //   };
+
+  //   html2pdf().from(element).set(pdfOptions).save();
+  // };
   const createdquote = (data) => {
     setsnackbar(true);
+    console.log(typeof data.message);
+    setsnackbarmessage(data.message);
   };
+
+  useEffect(() => {
+    if (error) {
+      setsnackbar(true);
+      console.log(error);
+      setsnackbarmessage(`Error : Quote cannot be saved,message:${error}`);
+    }
+  }, [error]);
+  console.log(snackbarmessage);
   const handlesnckbarclose = () => {
     setsnackbar(false);
   };
 
   const handleSave = () => {
+    if (!quoteName.trim()) {
+      // Quote Name is empty
+      alert("Please enter a Quote Name.");
+      return;
+    }
+
+    if (!quoteValidity) {
+      alert("Please select a Quote Validity date.");
+      return;
+    }
+
+    if (!totalAmount) {
+      alert("Please enter a Total Amount.");
+      return;
+    }
+
+    console.log(quotetables);
+
+    const formattedQuoteValidity = quoteValidity + "T00:00:00Z";
     const newQuoteId = quote ? quote.id : uuidv4();
+    console.log(quotetables[0].length);
     const newQuote = {
       ID: newQuoteId,
       Name: quoteName,
       TotalAmount: parseFloat(totalAmount),
-      ExpiryDate: quoteValidity ? quoteValidity : null,
+      ExpiryDate: formattedQuoteValidity,
       Files: quotefiles ? quotefiles : [],
-      Tables: quotetables,
+      Tables:
+        quotetables.length >= 1
+          ? quotetables
+          : [
+              {
+                Name: "",
+                Header: [],
+                Rows: [[]],
+              },
+            ],
     };
-    // {
-    //     "ID": "2",
-    //       "Name":"Quote 2",
-    //       "ExpiryDate": "2024-12-31T00:00:00Z",
-    //       "TotalAmount":2969.56,
-    //          "Files": ["file4.pdf", "file5.doc"],
-    //      "Tables": [
-    //         {
-    //            "Name": "Table 1",
-    //         "Header": ["Part Name", "Unit Price", "Quantity", "Total Price"],
-    //         "Rows": [
-    //           ["Part D", "10.0", "5", "50.0"],
-    //           ["Part B", "10.0", "5", "50.0"],
-    //           ["Part C", "10.0", "5", "50.0"]
-    //         ]
-    //       },
-    //         {
-    //           "Name": "Table 2",
-    //         "Header": ["Product", "Price", "Quantity", "Subtotal"],
-    //         "Rows": [
-    //          ["Part A", "10.0", "5", "50.0"],
-    //       ["Part B", "15.0", "3", "45.0"],
-    //       ["Part C", "8.0", "7", "56.0"]
-    //         ]
-    //         }
-    //      ]
-    //   }
+
     const createorupdate = async () => {
       if (quote) {
         await createquote(
@@ -122,6 +157,7 @@ const Quotationeditadddummy = () => {
 
   return (
     <>
+      {isLoading && <Loading />}
       <div className="formcontainer">
         <h1>Edit/Create</h1>
 
@@ -142,6 +178,9 @@ const Quotationeditadddummy = () => {
                 type="text"
                 value={quoteName}
                 onChange={(e) => setQuoteName(e.target.value)}
+                inputProps={{
+                  maxLength: 50,
+                }}
               />
             </Grid>
             <Grid item xs={6}>
@@ -155,7 +194,7 @@ const Quotationeditadddummy = () => {
               />
             </Grid>
             <Grid item xs={6}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Quote Validity"
                   onChange={(newDate) => setQuoteValidity(newDate)}
@@ -163,8 +202,19 @@ const Quotationeditadddummy = () => {
                   // inputFormat={(value) =>
                   //   value ? formatdate(value, "YYYY-MM-DD") : ""
                   // }
-                />
-              </LocalizationProvider>
+                /> */}
+              <TextField
+                id="quoteValidity"
+                type="date"
+                label="Quote Validity"
+                value={quoteValidity}
+                onChange={(event) => setQuoteValidity(event.target.value)}
+                required
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              {/* </LocalizationProvider> */}
             </Grid>
             <Grid item xs={6}>
               <FileUploader
@@ -173,7 +223,7 @@ const Quotationeditadddummy = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Tablecomp updatedtables={setquotetables} />
+              <TableComponent updatedtables={setquotetables} />
             </Grid>
           </Grid>
           <Button
@@ -189,11 +239,11 @@ const Quotationeditadddummy = () => {
           open={isopen}
           autoHideDuration={3000}
           onClose={handlesnckbarclose}
-          message="Quote updated successfully."
+          message={snackbarmessage}
         ></Snackbar>
       </div>
     </>
   );
 };
 
-export default Quotationeditadddummy;
+export default Quotationeditadd;

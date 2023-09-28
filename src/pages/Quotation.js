@@ -14,12 +14,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { useDispatch } from "react-redux";
 import { clearSelectedQuote } from "../appStore/actions";
 import { useLocation } from "react-router-dom";
-
-// import { Snackbar } from "@mui/material";
-// import Loading from "../Components/Loading";
-// import { useSelector } from "react-redux/es/hooks/useSelector";
-// import { useDispatch } from "react-redux";
-// import { loginUser } from "../features/UserSlice";
+import Loading from "../Components/LoaderComponent";
 
 const useStyles = makeStyles({
   gridcontainer: {
@@ -55,30 +50,17 @@ const AllQuotation = () => {
     }
   }, [location.pathname]);
 
-  // const cards = [
-  //   { id: 1, title: "Quote1", chipcontent: "Expired", price: 24500 },
-  //   { id: 2, title: "Quote2", chipcontent: "Expired", price: 24500 },
-  //   { id: 3, title: "Quote3", chipcontent: "Expired", price: 24500 },
-  //   { id: 4, title: "Quote4", chipcontent: "Expired", price: 24500 },
-  //   { id: 5, title: "Quote5", chipcontent: "Expired", price: 24500 },
-  // ];
   const classes = useStyles();
   const [allquotes, setallquotes] = useState([]);
 
   const { isLoading, error, sendRequest: getquotes } = useHttp();
   const fetchallquotes = (data) => {
     if (data) {
+      console.log("inside");
       setallquotes(data);
     }
   };
 
-  // if (postfinalcroppeImage !== "") {
-  //   let postbody = JSON.stringify({
-  //     image_url: postfinalcroppeImage,
-  //     image_url_type: "absolute",
-  //     caption: caption,
-  //     creator_id: user.userauth.userId,
-  //   });
   useEffect(() => {
     const fetchingquotes = async () => {
       await getquotes(
@@ -102,7 +84,7 @@ const AllQuotation = () => {
   const onAddClick = () => {
     navigate(`/custiv/quotation/add`);
   };
-
+  console.log(allquotes);
   return (
     <>
       {/* <h1>ALL Quotes</h1>
@@ -140,6 +122,8 @@ const AllQuotation = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
+      {isLoading && <Loading></Loading>}
+
       <div style={{ marginTop: "35px" }}>
         <Grid
           container

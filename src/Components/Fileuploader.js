@@ -52,14 +52,17 @@ function FileUploader({ files, updatedfiles }) {
       <label htmlFor="file-input" className="file-input-label">
         Choose files
       </label>
-      <div className="file-previews">
-        {selectedFiles.map((fileName, index) => (
-          <div key={index} className="file-preview">
-            <span>{fileName}</span>
-            <button onClick={() => handleRemoveFile(fileName)}>Remove</button>
-          </div>
-        ))}
-      </div>
+      {selectedFiles.length !== 0 && (
+        <div className="file-previews">
+          {selectedFiles.map((fileName, index) => (
+            <div key={index} className="file-preview">
+              <span>{fileName}</span>
+              <button onClick={() => handleRemoveFile(fileName)}>Remove</button>
+            </div>
+          ))}
+        </div>
+      )}
+
       <Snackbar
         open={isSnackbarOpen}
         autoHideDuration={3000}

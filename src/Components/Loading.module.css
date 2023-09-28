@@ -1,0 +1,22 @@
+.loading {
+  background-color: rgba(229, 227, 227, 0.8);
+  display: block;
+  height: 100%;
+  left: 0;
+
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.lds_roller {
+  display: inline-block;
+  height: 5rem;
+  left: 48%;
+  position: fixed;
+  top: 50%;
+  width: 5rem;
+  z-index: 100;
+  /* background: #405de6; */
+}

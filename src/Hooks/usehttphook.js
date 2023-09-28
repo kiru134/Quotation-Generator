@@ -1,3 +1,4 @@
+import { OneKPlus } from "@mui/icons-material";
 import { useState, useCallback } from "react";
 
 const useHttp = () => {
@@ -15,17 +16,20 @@ const useHttp = () => {
         // body: requestConfig.body ? JSON.stringify(requestConfig.body) : null,
         body: requestConfig.body ? requestConfig.body : null,
       });
+
       console.log(response.status);
       const data = await response.json();
+
       if (response.status === 401) {
-        throw new Error(`Unauthorized access:${data.detail}`);
+        throw new Error(`Unauthorized access:${data.message}`);
       } else if (response.status === 403) {
-        throw new Error(`Forbidden access:${data.detail}`);
+        throw new Error(`Forbidden access:${data.message}`);
       } else if (response.status === 500) {
         throw new Error(`Internal Server Error:${response.status}`);
-      } else if (!response.ok) {
-        throw new Error(`${data.detail}`);
+      } else if (response.status === 400) {
+        throw new Error(`Bad Request :${data.message}`);
       } else {
+        console.log("inside apply");
         applyData(data);
       }
     } catch (err) {
