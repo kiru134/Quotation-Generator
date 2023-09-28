@@ -14,7 +14,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { useDispatch } from "react-redux";
 import { clearSelectedQuote } from "../appStore/actions";
 import { useLocation } from "react-router-dom";
-import Loading from "../Components/LoaderComponent";
+// import Loading from "../Components/LoaderComponent";
+import SkeletonList from "../Components/LoadingSkeleton";
 
 const useStyles = makeStyles({
   gridcontainer: {
@@ -122,7 +123,7 @@ const AllQuotation = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      {isLoading && <Loading></Loading>}
+      {/* {isLoading && <Loading></Loading>} */}
 
       <div style={{ marginTop: "35px" }}>
         <Grid
@@ -131,6 +132,14 @@ const AllQuotation = () => {
           className={classes.gridcontainer}
           style={{ marginTop: "35px" }}
         >
+          {isLoading && (
+            <SkeletonList></SkeletonList>
+
+            // <Grid item xs={12} sm={6} md={4}>
+            //   <CardSkeleton></CardSkeleton>
+            // </Grid>
+          )}
+
           {allquotes.map((ele) => (
             <Grid item key={ele.id} xs={12} sm={6} md={4}>
               <Cardcomp
