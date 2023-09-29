@@ -73,7 +73,11 @@ const Quotationeditadd = () => {
     console.log(typeof data.message);
     setsnackbarmessage(data.message);
   };
-
+  useEffect(() => {
+    quote
+      ? (document.title = `Edit ${quote.title}`)
+      : (document.title = "Create Quote");
+  }, []);
   useEffect(() => {
     if (error) {
       setsnackbar(true);
