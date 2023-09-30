@@ -57,7 +57,6 @@ const AllQuotation = () => {
   const { isLoading, error, sendRequest: getquotes } = useHttp();
   const fetchallquotes = (data) => {
     if (data) {
-      console.log("inside");
       setallquotes(data);
     }
   };

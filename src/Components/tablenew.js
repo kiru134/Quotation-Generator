@@ -45,24 +45,32 @@ const TableComponent = ({ updatedtables }) => {
         ["", "", "", ""],
       ],
     };
-    console.log(tables.length);
     console.log(tables);
-    if (tables[0].length === 0) {
-      setTables([newTable]);
+    if (tables.length > 0) {
+      tables[0].length === 0
+        ? setTables([newTable])
+        : setTables([...tables, newTable]);
     } else {
-      setTables([...tables, newTable]);
+      setTables([newTable]);
     }
   };
 
   const handleupdatedtable = (data, index) => {
     // console.log(data.splice(1, data.length), index);
+    console.log(data);
     const updatedTables = [...tables];
     updatedTables[index].header = data[0];
-    updatedTables[index].rows = data.splice(1, data.length);
+    console.log("Before update");
+    console.log(updatedTables[index].rows);
+    updatedTables[index].rows = data
+      .slice(1)
+      .map((row) => row.map((cell) => cell.trim()));
+    console.log("after update");
+    console.log(updatedTables[index].rows);
+    console.log(updatedTables);
     setTables(updatedTables);
   };
 
-  console.log(tables);
   // &&
   // tables[0].rows[0].length === 0 &&
   // tables[0].headers === undefined &&

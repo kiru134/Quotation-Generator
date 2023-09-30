@@ -29,7 +29,6 @@ const useHttp = () => {
       } else if (response.status === 400) {
         throw new Error(`Bad Request :${data.message}`);
       } else {
-        console.log("inside apply");
         applyData(data);
       }
     } catch (err) {

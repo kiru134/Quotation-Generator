@@ -40,6 +40,7 @@ const CreateTable = ({ data, tableIndex, updatedtable }) => {
 
   const handleclick = (e) => {
     e.preventDefault();
+    console.log(spreadsheetdata.getData());
     updatedtable(spreadsheetdata.getData(), tableIndex);
     console.log("sent data to parent");
   };

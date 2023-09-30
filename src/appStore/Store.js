@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import selectedQuoteReducer from "./reducer";
 
-// Define a root reducer
 const rootReducer = {
   selectedQuote: selectedQuoteReducer,
 };

@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Grid, TextField, Button } from "@mui/material";
 import CurrencyFormat from "react-currency-input-field";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
 import { makeStyles } from "@material-ui/core";
 import FileUploader from "../Components/Fileuploader";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,8 +8,9 @@ import TableComponent from "../Components/tablenew";
 import useHttp from "../Hooks/usehttphook";
 import Snackbar from "@mui/material/Snackbar";
 import { v4 as uuidv4 } from "uuid";
-import html2pdf from "html2pdf.js";
 import Loading from "../Components/LoaderComponent";
+
+import { updateSelectedQuote } from "../appStore/actions";
 
 const useStyles = makeStyles({
   gridcontainer: {
@@ -30,6 +28,8 @@ const Quotationeditadd = () => {
   const [snackbarmessage, setsnackbarmessage] = useState("");
 
   const quote = useSelector((state) => state.selectedQuote);
+
+  const dispatch = useDispatch();
 
   function formatdate(inputDate) {
     const year = inputDate.getFullYear();
@@ -51,26 +51,9 @@ const Quotationeditadd = () => {
   );
   const [quotetables, setquotetables] = useState(quote ? quote.tables : [[]]);
   const [isopen, setsnackbar] = useState(false);
-  console.log(quoteValidity);
-  // const createdquote = (data) => {
 
-  //   setsnackbar(true);
-
-  //   const element = document.getElementById("root");
-
-  //   const pdfOptions = {
-  //     margin: 10,
-  //     filename: `${quoteName}.pdf`,
-  //     image: { type: "jpeg", quality: 0.98 },
-  //     html2canvas: { scale: 2 },
-  //     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-  //   };
-
-  //   html2pdf().from(element).set(pdfOptions).save();
-  // };
   const createdquote = (data) => {
     setsnackbar(true);
-    console.log(typeof data.message);
     setsnackbarmessage(data.message);
   };
   useEffect(() => {
@@ -85,7 +68,7 @@ const Quotationeditadd = () => {
       setsnackbarmessage(`Error : Quote cannot be saved,message:${error}`);
     }
   }, [error]);
-  console.log(snackbarmessage);
+
   const handlesnckbarclose = () => {
     setsnackbar(false);
   };
@@ -106,12 +89,13 @@ const Quotationeditadd = () => {
       alert("Please enter a Total Amount.");
       return;
     }
-
+    console.log(quote);
     console.log(quotetables);
-
+    console.log(quotetables.length);
+    // console.log(quotetables[0].rows.length);
+    // console.log(quote.ID);
     const formattedQuoteValidity = quoteValidity + "T00:00:00Z";
-    const newQuoteId = quote ? quote.id : uuidv4();
-    console.log(quotetables[0].length);
+    const newQuoteId = quote ? (quote.ID ? quote.ID : quote.id) : uuidv4();
     const newQuote = {
       ID: newQuoteId,
       Name: quoteName,
@@ -119,7 +103,10 @@ const Quotationeditadd = () => {
       ExpiryDate: formattedQuoteValidity,
       Files: quotefiles ? quotefiles : [],
       Tables:
-        quotetables.length >= 1
+        quotetables &&
+        quotetables.length >= 1 &&
+        quotetables[0].rows &&
+        quotetables[0].rows.length >= 1
           ? quotetables
           : [
               {
@@ -154,6 +141,9 @@ const Quotationeditadd = () => {
       }
     };
     createorupdate();
+    console.log(newQuoteId);
+    console.log(newQuote);
+    dispatch(updateSelectedQuote(newQuote));
   };
   const updatedquotefile = (file) => {
     setQuotefiles(file);
