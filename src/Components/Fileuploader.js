@@ -3,8 +3,12 @@ import "../Components/form.css";
 import Snackbar from "@mui/material/Snackbar";
 
 function FileUploader({ files, updatedfiles }) {
-  const [selectedFiles, setSelectedFiles] = useState(files);
+  const [selectedFiles, setSelectedFiles] = useState(files || []);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+
+  useEffect(() => {
+    setSelectedFiles(files || []);
+  }, [files]);
 
   useEffect(() => {
     updatedfiles(selectedFiles);
@@ -13,7 +17,7 @@ function FileUploader({ files, updatedfiles }) {
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
     e.target.value = "";
-
+    console.log(newFiles);
     const duplicates = newFiles.some((newFile) =>
       selectedFiles.includes(newFile.name)
     );
@@ -52,7 +56,7 @@ function FileUploader({ files, updatedfiles }) {
       <label htmlFor="file-input" className="file-input-label">
         Choose files
       </label>
-      {selectedFiles.length !== 0 && (
+      {selectedFiles && selectedFiles.length !== 0 && (
         <div className="file-previews">
           {selectedFiles.map((fileName, index) => (
             <div key={index} className="file-preview">

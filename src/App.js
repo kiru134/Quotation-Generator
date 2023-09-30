@@ -19,7 +19,6 @@ function App() {
             path="custiv/quotation/edit/:quotationid"
           />
           <Route element={<Quotationeditadd />} path="custiv/quotation/add" />
-          <Route element={<TableComponent />} path="custiv/quotation/table" />
           <Route
             element={<Navigate to="custiv/quotation/all" replace={true} />}
             path="*"

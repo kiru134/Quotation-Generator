@@ -40,9 +40,7 @@ const CreateTable = ({ data, tableIndex, updatedtable }) => {
 
   const handleclick = (e) => {
     e.preventDefault();
-    console.log(spreadsheetdata.getData());
     updatedtable(spreadsheetdata.getData(), tableIndex);
-    console.log("sent data to parent");
   };
   //   console.log(quote.tables);
 
@@ -52,7 +50,14 @@ const CreateTable = ({ data, tableIndex, updatedtable }) => {
       <br />
       <button
         onClick={(event) => handleclick(event)}
-        style={{ backgroundColor: "#1976d2", color: "white", border: "0px" }}
+        style={{
+          height: "20px",
+          backgroundColor: "#1976d2",
+          color: "white",
+          border: "0px",
+          borderRadius: "2px",
+          cursor: "pointer",
+        }}
       >
         Save Table
       </button>

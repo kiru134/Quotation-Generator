@@ -5,17 +5,13 @@ import TextField from "@mui/material/TextField";
 import { Paper, Button, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const TableComponent = ({ updatedtables }) => {
-  // const [spreadsheetdata, setSpreadsheetdata] = useState(null);
-  const quote = useSelector((state) => state.selectedQuote);
-  const [tables, setTables] = useState(
-    quote && quote.tables
-      ? quote.tables[0].rows.length >= 1
-        ? quote.tables
-        : [[]]
-      : [[]]
-  );
-  // console.log(quote.tables);
+const TableComponent = ({ quotetables, updatedtables }) => {
+  const [tables, setTables] = useState(quotetables || []);
+
+  useEffect(() => {
+    setTables(quotetables || []);
+  }, [quotetables]);
+
   useEffect(() => {
     updatedtables(tables);
   }, [tables]);
@@ -36,17 +32,21 @@ const TableComponent = ({ updatedtables }) => {
   };
 
   const handleAddTable = () => {
+    let newtablename = "";
+    tables
+      ? (newtablename = `Table ${tables.length + 1}`)
+      : (newtablename = "Table 1");
     const newTable = {
-      name: `Table ${tables.length + 1}`,
-      header: ["Product", "Price", "Quantity", "Subtotal"], // Default header
+      name: newtablename,
+      header: ["Product", "Price", "Quantity", "Subtotal"],
       rows: [
         ["", "", "", ""],
         ["", "", "", ""],
         ["", "", "", ""],
       ],
     };
-    console.log(tables);
-    if (tables.length > 0) {
+
+    if (tables && tables.length > 0) {
       tables[0].length === 0
         ? setTables([newTable])
         : setTables([...tables, newTable]);
@@ -56,68 +56,55 @@ const TableComponent = ({ updatedtables }) => {
   };
 
   const handleupdatedtable = (data, index) => {
-    // console.log(data.splice(1, data.length), index);
-    console.log(data);
     const updatedTables = [...tables];
     updatedTables[index].header = data[0];
-    console.log("Before update");
-    console.log(updatedTables[index].rows);
+
     updatedTables[index].rows = data
       .slice(1)
       .map((row) => row.map((cell) => cell.trim()));
-    console.log("after update");
-    console.log(updatedTables[index].rows);
-    console.log(updatedTables);
+
     setTables(updatedTables);
   };
 
-  // &&
-  // tables[0].rows[0].length === 0 &&
-  // tables[0].headers === undefined &&
-  // tables[0].name === undefined
   return (
     <div>
-      {/* {(!quote.tables || quote.tables.length === 0) && tables.length === 0 ? (
-        <Button variant="contained" color="primary" onClick={handleAddTable}>
-          Add Table
-        </Button>
-      ) : ( */}
-
       <Button variant="contained" color="primary" onClick={handleAddTable}>
         Add Table
       </Button>
-      {tables.map((table, tableIndex) => (
-        <>
-          {table.header && table.rows && (
-            <Paper
-              key={tableIndex}
-              style={{ margin: "16px 0", padding: "16px" }}
-            >
-              <TextField
-                label="Table Name"
-                value={table.name}
-                onChange={(e) =>
-                  handleEditTableName(tableIndex, e.target.value)
-                }
-                style={{ marginBottom: "8px" }}
-              />
-              <IconButton
-                onClick={() => handleDeleteTable(tableIndex)}
-                color="secondary"
+
+      {tables !== undefined &&
+        tables.map((table, tableIndex) => (
+          <>
+            {table.header && table.rows && (
+              <Paper
+                key={tableIndex}
+                style={{ margin: "16px 0", padding: "16px" }}
               >
-                <DeleteIcon />
-              </IconButton>
-              <div>
-                <CreateTable
-                  tableIndex={tableIndex}
-                  data={[[...table.header], ...table.rows]}
-                  updatedtable={handleupdatedtable}
-                ></CreateTable>
-              </div>
-            </Paper>
-          )}
-        </>
-      ))}
+                <TextField
+                  label="Table Name"
+                  value={table.name}
+                  onChange={(e) =>
+                    handleEditTableName(tableIndex, e.target.value)
+                  }
+                  style={{ marginBottom: "8px" }}
+                />
+                <IconButton
+                  onClick={() => handleDeleteTable(tableIndex)}
+                  color="secondary"
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <div>
+                  <CreateTable
+                    tableIndex={tableIndex}
+                    data={[[...table.header], ...table.rows]}
+                    updatedtable={handleupdatedtable}
+                  ></CreateTable>
+                </div>
+              </Paper>
+            )}
+          </>
+        ))}
     </div>
   );
 };

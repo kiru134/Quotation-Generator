@@ -6,7 +6,6 @@ export const setSelectedQuote = (quote) => ({
 export const clearSelectedQuote = () => ({
   type: "CLEAR_SELECTED_QUOTE",
 });
-
 export const updateSelectedQuote = (updatedQuote) => ({
   type: "UPDATE_SELECTED_QUOTE",
   payload: updatedQuote,

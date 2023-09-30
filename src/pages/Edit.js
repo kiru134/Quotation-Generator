@@ -5,10 +5,11 @@ import { makeStyles } from "@material-ui/core";
 import FileUploader from "../Components/Fileuploader";
 import { useSelector, useDispatch } from "react-redux";
 import TableComponent from "../Components/tablenew";
-import useHttp from "../Hooks/usehttphook";
 import Snackbar from "@mui/material/Snackbar";
 import { v4 as uuidv4 } from "uuid";
 import Loading from "../Components/LoaderComponent";
+import useHttp from "../Hooks/usehttphook";
+import { useParams } from "react-router-dom";
 
 import { updateSelectedQuote } from "../appStore/actions";
 
@@ -23,13 +24,39 @@ const useStyles = makeStyles({
 });
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const Quotationeditadd = () => {
+  const param1 = useParams();
+
   const classes = useStyles();
   const { isLoading, error, sendRequest: createquote } = useHttp();
-  const [snackbarmessage, setsnackbarmessage] = useState("");
+  const { isLoadingquote, errorquote, sendRequest: getquote } = useHttp();
 
-  const quote = useSelector((state) => state.selectedQuote);
+  const [snackbarmessage, setsnackbarmessage] = useState("");
+  const [quote, setquote] = useState("");
+
+  const quoteid = useSelector((state) => state.selectedQuote.id);
 
   const dispatch = useDispatch();
+
+  const resultantquote = (data) => {
+    if (data) {
+      setquote(data);
+    }
+  };
+
+  useEffect(() => {
+    if (param1.quotationid) {
+      const fetchingquote = async () => {
+        await getquote(
+          {
+            url: BASE_URL + `get/${param1.quotationid}`,
+            headers: { "Content-Type": "application/json" },
+          },
+          resultantquote
+        );
+      };
+      fetchingquote();
+    }
+  }, []);
 
   function formatdate(inputDate) {
     const year = inputDate.getFullYear();
@@ -41,30 +68,41 @@ const Quotationeditadd = () => {
     return formattedDate;
   }
 
-  const [quoteName, setQuoteName] = useState(quote ? quote.title : "");
-  const [totalAmount, setTotalAmount] = useState(quote ? quote.price : "");
-  const [quoteValidity, setQuoteValidity] = useState(
-    quote && quote.expiry ? formatdate(new Date(quote.expiry)) : null
-  );
-  const [quotefiles, setQuotefiles] = useState(
-    quote && quote.files ? quote.files : []
-  );
-  const [quotetables, setquotetables] = useState(quote ? quote.tables : [[]]);
+  const [quoteName, setQuoteName] = useState("");
+  const [totalAmount, setTotalAmount] = useState("");
+  const [quoteValidity, setQuoteValidity] = useState();
+  const [quotefiles, setQuotefiles] = useState([]);
+  const [quotetables, setquotetables] = useState([{}]);
   const [isopen, setsnackbar] = useState(false);
+
+  useEffect(() => {
+    // Initialize form fields with existing quote data if available
+    if (quote) {
+      setQuoteName(quote.name || "");
+      setTotalAmount(quote.totalAmount || "");
+      setQuoteValidity(
+        quote.expiryDate ? formatdate(new Date(quote.expiryDate)) : null
+      );
+      setQuotefiles(quote.files || []);
+      setquotetables(quote.tables || [{}]);
+    }
+  }, [quote]);
 
   const createdquote = (data) => {
     setsnackbar(true);
     setsnackbarmessage(data.message);
   };
+
   useEffect(() => {
     quote
-      ? (document.title = `Edit ${quote.title}`)
+      ? (document.title = `Edit ${quote.name}`)
       : (document.title = "Create Quote");
   }, []);
+
   useEffect(() => {
     if (error) {
       setsnackbar(true);
-      console.log(error);
+
       setsnackbarmessage(`Error : Quote cannot be saved,message:${error}`);
     }
   }, [error]);
@@ -89,20 +127,20 @@ const Quotationeditadd = () => {
       alert("Please enter a Total Amount.");
       return;
     }
-    console.log(quote);
-    console.log(quotetables);
-    console.log(quotetables.length);
-    // console.log(quotetables[0].rows.length);
-    // console.log(quote.ID);
+
     const formattedQuoteValidity = quoteValidity + "T00:00:00Z";
-    const newQuoteId = quote ? (quote.ID ? quote.ID : quote.id) : uuidv4();
+    const newQuoteId = param1.quotationid
+      ? param1.quotationid
+      : quoteid
+      ? quoteid
+      : uuidv4();
     const newQuote = {
-      ID: newQuoteId,
-      Name: quoteName,
-      TotalAmount: parseFloat(totalAmount),
-      ExpiryDate: formattedQuoteValidity,
-      Files: quotefiles ? quotefiles : [],
-      Tables:
+      id: newQuoteId,
+      name: quoteName,
+      totalAmount: parseFloat(totalAmount),
+      expiryDate: formattedQuoteValidity,
+      files: quotefiles ? quotefiles : [],
+      tables:
         quotetables &&
         quotetables.length >= 1 &&
         quotetables[0].rows &&
@@ -116,9 +154,10 @@ const Quotationeditadd = () => {
               },
             ],
     };
+    dispatch(updateSelectedQuote({ id: newQuoteId }));
 
     const createorupdate = async () => {
-      if (quote) {
+      if (param1.quotationid || quoteid) {
         await createquote(
           {
             url: BASE_URL + "update",
@@ -141,9 +180,6 @@ const Quotationeditadd = () => {
       }
     };
     createorupdate();
-    console.log(newQuoteId);
-    console.log(newQuote);
-    dispatch(updateSelectedQuote(newQuote));
   };
   const updatedquotefile = (file) => {
     setQuotefiles(file);
@@ -152,6 +188,7 @@ const Quotationeditadd = () => {
   return (
     <>
       {isLoading && <Loading />}
+      {isLoadingquote && <Loading />}
       <div className="formcontainer">
         <h1>Edit/Create</h1>
 
@@ -212,12 +249,15 @@ const Quotationeditadd = () => {
             </Grid>
             <Grid item xs={6}>
               <FileUploader
-                files={quotefiles}
+                files={quote.files}
                 updatedfiles={updatedquotefile}
               />
             </Grid>
             <Grid item xs={12}>
-              <TableComponent updatedtables={setquotetables} />
+              <TableComponent
+                quotetables={quote.tables}
+                updatedtables={setquotetables}
+              />
             </Grid>
           </Grid>
           <Button

@@ -1,4 +1,6 @@
-const initialState = null;
+const initialState = {
+  id: "",
+};
 
 const selectedQuoteReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -6,12 +8,8 @@ const selectedQuoteReducer = (state = initialState, action) => {
       return action.payload;
 
     case "CLEAR_SELECTED_QUOTE":
-      return null;
+      return initialState;
     case "UPDATE_SELECTED_QUOTE":
-      console.log(action.payload.ID);
-      if (action.payload.ID === undefined) {
-        action.payload.ID = state.ID;
-      }
       return action.payload;
     default:
       return state;

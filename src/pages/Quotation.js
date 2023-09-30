@@ -75,7 +75,6 @@ const AllQuotation = () => {
   }, []);
 
   const removeQuote = (quoteId) => {
-    console.log("deleted from parent");
     setallquotes((prevQuotes) =>
       prevQuotes.filter((quote) => quote.id !== quoteId)
     );
@@ -84,7 +83,7 @@ const AllQuotation = () => {
   const onAddClick = () => {
     navigate(`/custiv/quotation/add`);
   };
-  console.log(allquotes);
+
   return (
     <>
       {/* <h1>ALL Quotes</h1>
@@ -138,20 +137,25 @@ const AllQuotation = () => {
             //   <CardSkeleton></CardSkeleton>
             // </Grid>
           )}
-
-          {allquotes.map((ele) => (
-            <Grid item key={ele.id} xs={12} sm={6} md={4}>
-              <Cardcomp
-                id={ele.id}
-                title={ele.name}
-                expiry={ele.expiryDate}
-                price={ele.totalAmount}
-                files={ele.files}
-                tables={ele.tables}
-                onDelete={removeQuote}
-              />
-            </Grid>
-          ))}
+          {Array.isArray(allquotes)
+            ? allquotes.map((ele) => (
+                <Grid item key={ele.id} xs={12} sm={6} md={4}>
+                  <Cardcomp
+                    id={ele.id}
+                    title={ele.name}
+                    expiry={ele.expiryDate}
+                    price={ele.totalAmount}
+                    files={ele.files}
+                    tables={ele.tables}
+                    onDelete={removeQuote}
+                  />
+                </Grid>
+              ))
+            : allquotes.message === "No quotes found" && (
+                <div style={{ margin: "20px" }}>
+                  <span>Please Create a new quote</span>
+                </div>
+              )}
 
           {/* <Grid item xs={12} sm={6} md={4}>
           <Cardcomp title="Quote 2" chipcontent="expired" price="24500" />

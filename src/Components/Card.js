@@ -90,16 +90,19 @@ function Cardcomp({ id, title, expiry, price, files, tables, onDelete }) {
     status = "Active";
   }
   const handleCardClick = () => {
+    // const selectedQuote = {
+    //   ID: id,
+    //   Name: title,
+    //   ExpiryDate: expiry,
+    //   TotalAmount: price,
+    //   Files: files,
+    //   Tables: tables,
+    // };
     const selectedQuote = {
       id,
-      title,
-      expiry,
-      price,
-      files,
-      tables,
     };
     dispatch(setSelectedQuote(selectedQuote));
-    navigate("/custiv/quotation/add");
+    navigate(`/custiv/quotation/edit/${id}`);
   };
 
   return (
