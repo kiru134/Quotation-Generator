@@ -6,10 +6,13 @@ import { Grid } from "@mui/material";
 function CardSkeleton() {
   return (
     <div className="skeleton-container">
-      <div className="skeleton-rectangular">
+      <div
+        className="skeleton-rectangular"
+        style={{ width: "100%", height: "100%" }}
+      >
         <Skeleton
           variant="rectangular"
-          width={350}
+          width={250}
           height={150}
           animation="wave"
         />
@@ -17,7 +20,7 @@ function CardSkeleton() {
         <div style={{ padding: "8px" }}>
           <Skeleton
             variant="rectangular"
-            width={100}
+            width="40%"
             height={20}
             animation="wave"
           />

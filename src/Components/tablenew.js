@@ -74,7 +74,7 @@ const TableComponent = ({ quotetables, updatedtables }) => {
 
       {tables !== undefined &&
         tables.map((table, tableIndex) => (
-          <>
+          <div key={tableIndex}>
             {table.header && table.rows && (
               <Paper
                 key={tableIndex}
@@ -103,7 +103,7 @@ const TableComponent = ({ quotetables, updatedtables }) => {
                 </div>
               </Paper>
             )}
-          </>
+          </div>
         ))}
     </div>
   );

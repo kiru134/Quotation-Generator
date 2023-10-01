@@ -70,7 +70,7 @@ const Quotationeditadd = () => {
 
   const [quoteName, setQuoteName] = useState("");
   const [totalAmount, setTotalAmount] = useState("");
-  const [quoteValidity, setQuoteValidity] = useState();
+  const [quoteValidity, setQuoteValidity] = useState("");
   const [quotefiles, setQuotefiles] = useState([]);
   const [quotetables, setquotetables] = useState([{}]);
   const [isopen, setsnackbar] = useState(false);
@@ -97,7 +97,7 @@ const Quotationeditadd = () => {
     quote
       ? (document.title = `Edit ${quote.name}`)
       : (document.title = "Create Quote");
-  }, []);
+  }, [quote]);
 
   useEffect(() => {
     if (error) {

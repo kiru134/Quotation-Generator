@@ -9,6 +9,14 @@ const CreateTable = ({ data, tableIndex, updatedtable }) => {
   const spreadsheetRef = useRef(null);
   const license =
     "OWU5NmEwNjY1ODQxNDg4ODYyMjRlYjU0YzBmMmI1MDAxNTI1NzJlZWQyN2RmN2RiZjE0NGRhY2M0NzIyNjlhYWI2YTBlNGFkMzhjM2E0ZDZkZDZlYjhkNjkyMTNjZWM5ODYzMDE1ZWEzYjlmM2M0N2NmNDNiYzcwM2MzNjNhNzcsZXlKdVlXMWxJam9pY0dGMWJDNW9iMlJsYkNJc0ltUmhkR1VpT2pFMk5ETTJOek0yTURBc0ltUnZiV0ZwYmlJNld5SmpjMkl1WVhCd0lpd2lhbk5tYVdSa2JHVXVibVYwSWl3aWQyVmlMbUZ3Y0NJc0lteHZZMkZzYUc5emRDSmRMQ0p3YkdGdUlqb2lNeUo5";
+  const numColumns = data[0] ? data[0].length : 4;
+  const numRows = data.length > 0 ? data.length : 1;
+  // Generate the columns configuration array
+  const columns = Array.from({ length: numColumns }, (_, index) => ({
+    type: "text",
+    width: 100,
+  }));
+  const minDimensions = [numColumns, numRows];
 
   useEffect(() => {
     if (!spreadsheetRef.current.jexcel) {
@@ -16,13 +24,14 @@ const CreateTable = ({ data, tableIndex, updatedtable }) => {
         // data: [["Product", "Price", "Quantity", "Subtotal"]],
         data,
         // columns: [{ type: "text", mask: "#,##0.00", width: 100 }],
-        columns: [
-          { type: "text", width: 100 },
-          { type: "text", width: 100 },
-          { type: "text", width: 100 },
-          { type: "text", width: 100 },
-        ],
-        minDimensions: [4, 1],
+        // columns: [
+        //   { type: "text", width: 100 },
+        //   { type: "text", width: 100 },
+        //   { type: "text", width: 100 },
+        //   { type: "text", width: 100 },
+        // ],
+        columns,
+        minDimensions,
         tableOverflow: true,
         tableWidth: "500px",
         tableHeight: "300px",
